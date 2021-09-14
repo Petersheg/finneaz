@@ -1,0 +1,41 @@
+{
+  "name": "checkman",
+  "version": "1.0.0",
+  "description": "Checkman in simple terms a vehicle record-keeping and history-look up system. its a platform where vehicle owners or people who intends to own a vehicle can easily learn about any vehicle past record .",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Drumroll-digital/checkman-backend.git"
+  },
+  "author": "Cipher",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Drumroll-digital/checkman-backend/issues"
+  },
+  "homepage": "https://github.com/Drumroll-digital/checkman-backend#readme",
+
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.13.4",
+    "nodemon": "^2.0.12",
+    "validator": "^13.6.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.31.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-react": "^7.24.0",
+    "parcel-bundler": "^1.12.5",
+    "prettier": "^2.3.2"
+  }
+}
