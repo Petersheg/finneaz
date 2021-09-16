@@ -4,7 +4,7 @@ dotenv.config({path:'./config.env'});
 const app = require('./app');
 
 const connectURL = process.env.DB_LOCAL;
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 const connectATLAS = process.env.DB_ATLAS.replace('<PASSWORD>',process.env.DB_PASS);
 
 const options = {

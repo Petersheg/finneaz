@@ -4,6 +4,6 @@ const userAuth = require('../controller/authController/users');
 
 const router = express.Router()
 
-router.route('/').get(testController.getTests);
+router.route('/').get(userAuth.protect, testController.getTests);
 
 module.exports = router;
