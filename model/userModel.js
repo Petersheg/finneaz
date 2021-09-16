@@ -74,12 +74,13 @@ userSchema.methods.passwordCheck = async function (plainPassword,hashedPassword)
 };
 
 // generate token for verification or password reset
-userSchema.methods.generateLinkToken = function(toExpired = 10){
+userSchema.methods.generateLinkToken = function(){
+    
     const plainLinkToken = crypto.randomBytes(16).toString('hex');
 
     const hashedLinkToken = crypto.createHash('sha256').update(plainLinkToken).digest('hex');
     this.linkToken = hashedLinkToken;
-    this.linkTokenExpires = Date.now() + toExpired * 60 * 1000;
+    this.linkTokenExpires = Date.now() + 10 * 60 * 1000; //Expires After 10 minutes
 
     console.log({plainLinkToken}, {hashedLinkToken}, this.linkTokenExpires);
 
