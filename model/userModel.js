@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs') ;
+const crypto = require('crypto');
 
 const userSchema = new mongoose.Schema({
 
@@ -32,6 +33,7 @@ const userSchema = new mongoose.Schema({
 
     emailConfirmation : {
         type : String,
+        enum : ['Pending','Activated'],
         default : 'Pending'
     },
 
@@ -51,6 +53,9 @@ const userSchema = new mongoose.Schema({
             message : 'Confirm password must be the same as your password'
         }
     },
+
+    linkToken : String,
+    linkTokenExpires : Date
 });
 
 // Hash Password and make it available on instance method.
@@ -68,7 +73,18 @@ userSchema.methods.passwordCheck = async function (plainPassword,hashedPassword)
     return await bcrypt.compare(plainPassword,hashedPassword);
 };
 
-// generate token for user authentication.
+// generate token for verification or password reset
+userSchema.methods.generateLinkToken = function(toExpired = 10){
+    const plainLinkToken = crypto.randomBytes(16).toString('hex');
+
+    const hashedLinkToken = crypto.createHash('sha256').update(plainLinkToken).digest('hex');
+    this.linkToken = hashedLinkToken;
+    this.linkTokenExpires = Date.now() + toExpired * 60 * 1000;
+
+    console.log({plainLinkToken}, {hashedLinkToken}, this.linkTokenExpires);
+
+    return plainLinkToken;
+}
 
 
 const User = mongoose.model('User',userSchema);
