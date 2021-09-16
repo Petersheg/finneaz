@@ -4,7 +4,7 @@
   "description": "Checkman in simple terms a vehicle record-keeping and history-look up system. its a platform where vehicle owners or people who intends to own a vehicle can easily learn about any vehicle past record .",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
