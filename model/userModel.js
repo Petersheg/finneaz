@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs') ;
 const crypto = require('crypto');
+const walletSchema = require('./wallet');
 
 const userSchema = new mongoose.Schema({
 
@@ -54,6 +55,8 @@ const userSchema = new mongoose.Schema({
         }
     },
 
+    wallet : [walletSchema],
+
     linkToken : String,
     linkTokenExpires : Date
 });
@@ -66,6 +69,15 @@ userSchema.pre('save', async function(next){
     // else hash password
     this.password = await bcrypt.hash(this.password,12);
     this.confirmPassword = undefined; //Get rid of confirm password.
+});
+
+// Help create wallet for user during sign up.
+userSchema.pre('save', async function(next){
+
+    if(this.isNew){
+        this.wallet.push({amount : 0, dateCreated : Date.now()});
+    }
+    next();
 });
 
 userSchema.methods.passwordCheck = async function (plainPassword,hashedPassword){

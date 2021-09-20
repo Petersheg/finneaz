@@ -3,7 +3,7 @@ const User = require('../model/userModel');
 exports.getUsers = async (req,res)=>{
     
     try{
-        const allUser =await User.find();
+        const allUser = await User.find();
 
         res.status(200).json({
             result : allUser.length,
