@@ -12,6 +12,18 @@ const generateJWToken = (id) => {
     });
 }
 
+const sendTokenAsResponse = (statusCode,user,res) =>{
+    const token = generateJWToken(user._id);
+
+    res.status(statusCode).json({
+        status : 'success',
+        token,
+        data : {
+            user
+        }
+    })
+}
+
 exports.signup = catchAsync(
     async (req, res, next) => {
 
@@ -67,14 +79,6 @@ exports.signup = catchAsync(
                 return next( new AppError('Message sending failed',500));
             }
         };
-
-        // res.status(201).json({
-        //     status : 'success',
-        //     token,
-        //     data : {
-        //         user
-        //     }
-        // });
     }
 )
 
@@ -135,11 +139,7 @@ exports.login = catchAsync(
         }
 
         // Else send user new token
-        const token = generateJWToken(user._id);
-        res.status(200).json({
-            status : 'success',
-            token
-        })
+        sendTokenAsResponse(200,user,res);
     }
 )
 
@@ -159,7 +159,7 @@ exports.protect = catchAsync(
 
         // Validate Token
         const userValidate = jwt.verify(token,process.env.JWT_SECRET);
-        const currentUser = await User.findById(userValidate.id);
+        const currentUser = await User.findById(userValidate.id).select('+password');
 
         // Check if user still exist
         if(!currentUser){
@@ -200,6 +200,8 @@ exports.forgotPassword = catchAsync(
                 message
             })
 
+            console.log(resetToken);
+
             res.status(200).json({
                 status : 'success',
                 message : 'Reset mail sent successfully, kindly check your email to continue'
@@ -214,3 +216,53 @@ exports.forgotPassword = catchAsync(
         }
     }
 );
+
+exports.resetPassword = catchAsync(
+    async (req,res, next)=> {
+        const plainResetToken = req.params.resetToken;
+        const hashedResetToken = crypto.createHash('sha256').update(plainResetToken).digest('hex');
+
+        const user = await User.findOne({
+            linkToken : hashedResetToken,
+            linkTokenExpires : {$gt  : Date.now() }
+        });
+
+        if(!user){
+            return next(new AppError('Invalid token', 404));
+        }
+
+        const {password, confirmPassword} = req.body;
+        user.password = password;
+        user.confirmPassword = confirmPassword;
+
+        user.linkToken = undefined;
+        user.linkTokenExpires = undefined;
+        await user.save();
+
+        sendTokenAsResponse(200,user,res);
+        
+    }
+)
+
+exports.updatePassword = catchAsync(
+    async (req,res,next)=>{
+        const currentUser = req.user;
+
+        if(!currentUser){
+            return next(new AppError('Invalid token, kindly try and log in again.',401));
+        };
+
+        const currentPassword = req.body.currentPassword;
+        const passCheck = await currentUser.passwordCheck(currentPassword,currentUser.password);
+
+        if(!passCheck) {
+            return next(new AppError('current password provided is wrong,',401));
+        }
+
+        currentUser.password = req.body.password,
+        currentUser.confirmPassword = req.body.confirmPassword;
+        await currentUser.save();
+
+        sendTokenAsResponse(200,currentUser,res);
+    }
+)

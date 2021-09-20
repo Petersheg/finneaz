@@ -7,6 +7,8 @@ router.post('/signup',authController.signup);
 router.get('/verifyemail/:linkToken', authController.verifyEmail);
 router.post('/login',authController.login);
 router.post('/forgotpassword',authController.forgotPassword);
+router.patch('/resetpassword/:resetToken',authController.resetPassword);
+router.patch('/updatepassword',authController.protect,authController.updatePassword);
 
 router
 .route('/')

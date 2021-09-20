@@ -13,7 +13,7 @@ const options = {
 }
 
 mongoose
-.connect(connectATLAS,options)
+.connect(connectURL,options)
 .then(() => console.log('DB connected successfully'))
 .catch(err =>  console.log(err));
 
