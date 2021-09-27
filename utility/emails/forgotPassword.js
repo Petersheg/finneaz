@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer');
 
 const forgotPasswordEmail = async (options) => {
+    
     const transport = nodemailer.createTransport({
         host : process.env.NODEMAILER_HOST,
         port : process.env.NODEMAILER_POR,

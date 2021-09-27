@@ -3,6 +3,7 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs') ;
 const crypto = require('crypto');
 const walletSchema = require('./wallet');
+const Transaction = require('./transaction');
 
 const userSchema = new mongoose.Schema({
 
@@ -94,11 +95,10 @@ userSchema.methods.generateLinkToken = function(){
     this.linkToken = hashedLinkToken;
     this.linkTokenExpires = Date.now() + 10 * 60 * 1000; //Expires After 10 minutes
 
-    console.log({plainLinkToken}, {hashedLinkToken}, this.linkTokenExpires);
+    // console.log({plainLinkToken}, {hashedLinkToken}, this.linkTokenExpires);
 
     return plainLinkToken;
 }
-
 
 const User = mongoose.model('User',userSchema);
 

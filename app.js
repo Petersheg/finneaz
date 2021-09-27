@@ -1,11 +1,12 @@
 const express = require('express');
 const helmet = require("helmet");
 const xss = require('xss-clean');
-const cors = require('cors')
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const mongoSanitize = require('express-mongo-sanitize');
 const app = express();
 const userRoute = require('./router/user');
-const testRoute = require('./router/test');
+const checkRoute = require('./router/check');
 const globalErrorHandler = require('./controller/errorController/validation');
 const AppError = require('./utility/appError');
 
@@ -20,9 +21,13 @@ app.use(helmet());
 app.use(xss());
 // Enable cors on all routes
 app.use(cors());
+// To make use cookieParser
+app.use(cookieParser());
 
 app.use('/api/v1/users',userRoute);
-app.use('/api/v1/tests',testRoute);
+app.use('/api/v1/check',checkRoute);
+
+
 
 // Handle unregister routes.
 app.all('*',(req,res,next)=>{

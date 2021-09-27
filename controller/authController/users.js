@@ -4,6 +4,7 @@ const User = require('./../../model/userModel');
 const catchAsync = require('./../../utility/catchAsync');
 const AppError = require('./../../utility/appError');
 const sendEmail = require('../../utility/emails/sendEmail');
+const sendAnyEmail = require('../../utility/emails/sendGrid');
 
 const generateJWToken = (id) => {
 
@@ -14,6 +15,8 @@ const generateJWToken = (id) => {
 
 const sendTokenAsResponse = (statusCode,user,res) =>{
     const token = generateJWToken(user._id);
+    
+    res.cookie('token',token,{maxAge:24 * 60 * 60 * 1000}); //Expires After 24 hours
 
     res.status(statusCode).json({
         status : 'success',
@@ -75,7 +78,6 @@ exports.signup = catchAsync(
                 user.linkTokenExpires = undefined
 
                 await user.save({validateBeforeSave : false});
-                console.log(err);
                 return next( new AppError('Message sending failed',500));
             }
         };
@@ -140,6 +142,7 @@ exports.login = catchAsync(
 
         // Else send user new token
         sendTokenAsResponse(200,user,res);
+        console.log(req.cookies)
     }
 )
 
@@ -198,9 +201,7 @@ exports.forgotPassword = catchAsync(
                 email : user.userEmail,
                 subject : 'Reset Password Email (Expires After 10 minutes)',
                 message
-            })
-
-            console.log(resetToken);
+            });
 
             res.status(200).json({
                 status : 'success',

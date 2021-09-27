@@ -1,7 +1,11 @@
 const express = require('express');
-const router = express.Router();
 const userController = require('../controller/userController');
 const authController = require('./../controller/authController/users');
+const transactionRoute = require('./transaction');
+
+const router = express.Router();
+
+router.use('/:userId?/transactions',transactionRoute); //optional parameter
 
 router.post('/signup',authController.signup);
 router.get('/verifyemail/:linkToken', authController.verifyEmail);
