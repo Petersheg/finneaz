@@ -83,6 +83,8 @@ exports.checkReportStatus = catchAsync(
             
             if(!userExist && await service.debitWallet(5)){
 
+                vinExistInHistory.users.push(req.user._id)//Add user to history
+
                 res.status(200).json({
                     status : true,
                     vinExistInHistory
