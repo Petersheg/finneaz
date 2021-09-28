@@ -6,15 +6,20 @@ exports.getHistoryByUser = catchAsync(
 
     async (req,res,next)=>{
         let filter = {};
+
         const userId = req.params.userId;
-        console.log(userId);
+        const currentUserId = req.user._id;
+
+        if(currentUserId != userId){
+            return next(new AppError('Invalid user Id provided!'));
+        }
 
         if(!userId){
             return next(new AppError('You can not access this route'));
         }
 
         if(userId) filter = {users : userId}
-        const vehicleHistories = await History.find(filter);
+        const vehicleHistories = await History.find(filter)//.populate('users');
 
         if(!vehicleHistories || vehicleHistories.length === 0){
             return next(new AppError('No history available for this user'));
