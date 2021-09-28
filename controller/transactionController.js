@@ -9,12 +9,21 @@ exports.getTransactionByUser = catchAsync(
         let filter = {};
         let userId = req.params.userId;
 
-        if(typeof userId !== 'undefined' || req.query) filter = {user:req.params.userId,...req.query};
-        if(typeof userId === 'undefined' || req.query) filter = {...req.query};
+        if(!userId){
+            return next(new AppError('You can not access this route',409));
+        }
+
+        if(userId  || req.query){
+            filter = {user : userId, ...req.query};
+        } 
 
         console.log(filter);
 
         const transactions = await Transaction.find(filter);
+
+        if(!transactions || transactions.length === 0){
+            return next(new AppError('No transaction(s) for this user',404));
+        }
         
         res.status(200).json({
             status: true,

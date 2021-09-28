@@ -48,7 +48,9 @@ exports.signup = catchAsync(
             const tokenLink = user.generateLinkToken();
             await user.save({validateBeforeSave : false});
 
-            const activationLink = `${req.protocol}//${req.get('host')}/api/v1/users/verify_email/${tokenLink}`;
+            const activationLink = `${req.get('host')}/api/v1/users/verify_email/${tokenLink}`;
+            //console.log(req);${req.protocol}
+            console.log(activationLink);
 
             const message = `<h3> Hi ${user.userFullName}</h3>
             <p> You must verify your email address to complete your registration
@@ -189,8 +191,10 @@ exports.forgotPassword = catchAsync(
         const resetToken = user.generateLinkToken(); //instance method
         await user.save({validateBeforeSave : false}); //save changes to model
 
-        const resetURL = `${req.protocol}//${req.get('host')}/api/v1/users/resetpassword/${resetToken}`
-
+        const resetURL = `${req.get('host')}/api/v1/users/resetpassword/${resetToken}`
+        //${req.protocol}
+        
+        
         const message = `<h1>Hi ${user.userFullName}</h1>
                     <p>Kindly click on this <a href = ${resetURL}> reset link </a> to reset your password</p>
                     <p>If you did not request a password rest, kindly ignore</p>`

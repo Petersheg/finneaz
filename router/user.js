@@ -2,10 +2,13 @@ const express = require('express');
 const userController = require('../controller/userController');
 const authController = require('./../controller/authController/users');
 const transactionRoute = require('./transaction');
+const historyRoute = require('./history');
 
 const router = express.Router();
 
-router.use('/:userId?/transactions',transactionRoute); //optional parameter
+router.use('/:userId?/history', historyRoute);
+router.use('/:userId?/transactions', transactionRoute);
+
 
 router.post('/signup',authController.signup);
 router.get('/verifyemail/:linkToken', authController.verifyEmail);
