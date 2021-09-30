@@ -3,7 +3,6 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs') ;
 const crypto = require('crypto');
 const walletSchema = require('./wallet');
-const Transaction = require('./transaction');
 
 const userSchema = new mongoose.Schema({
 

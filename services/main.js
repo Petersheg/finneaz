@@ -1,4 +1,5 @@
 const Transaction = require('../model/transaction');
+const axios = require('axios')
 
 class Services {
 
@@ -45,6 +46,29 @@ class Services {
         }
 
         return false;
+    }
+
+    async initiatePayStack(headers,data){
+
+        let initTransaction = await axios({
+            method : 'post',
+            url : process.env.PAYSTACK_INIT_URL,
+            data,
+            headers
+        });
+
+        return initTransaction;
+    }
+
+    async verifyPayStack(headers,verifyURL){
+
+        const verifyResponse = await axios({
+            method : 'get',
+            url : verifyURL,
+            headers
+        });
+
+        return verifyResponse
     }
 }
 

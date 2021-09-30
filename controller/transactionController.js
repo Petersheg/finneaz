@@ -7,7 +7,13 @@ exports.getTransactionByUser = catchAsync(
     async (req,res,next) => {
  
         let filter = {};
+
         let userId = req.params.userId;
+        const currentUserId = req.user._id;
+
+        if(userId != currentUserId){
+            return next(new AppError('Invalid user',401));
+        }
 
         if(!userId){
             return next(new AppError('You can not access this route',409));
@@ -15,9 +21,7 @@ exports.getTransactionByUser = catchAsync(
 
         if(userId  || req.query){
             filter = {user : userId, ...req.query};
-        } 
-
-        console.log(filter);
+        }
 
         const transactions = await Transaction.find(filter);
 

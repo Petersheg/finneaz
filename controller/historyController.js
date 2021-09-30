@@ -11,7 +11,7 @@ exports.getHistoryByUser = catchAsync(
         const currentUserId = req.user._id;
 
         if(currentUserId != userId){
-            return next(new AppError('Invalid user Id provided!'));
+            return next(new AppError('Invalid user!',401));
         }
 
         if(!userId){
