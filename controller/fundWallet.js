@@ -2,7 +2,6 @@ const axios = require('axios')
 const catchAsync = require('../utility/catchAsync');
 const AppError = require('../utility/appError');
 const Services = require('../services/main');
-const e = require('express');
 
 exports.fundWallet = catchAsync(
 
