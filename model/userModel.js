@@ -55,6 +55,10 @@ const userSchema = new mongoose.Schema({
         }
     },
 
+    passwordChangedAt : {
+        type : Date
+    },
+
     wallet : [walletSchema],
 
     linkToken : String,
@@ -71,6 +75,13 @@ userSchema.pre('save', async function(next){
     this.confirmPassword = undefined; //Get rid of confirm password.
 });
 
+userSchema.pre('save', function(next){
+    if(!this.isModified('password') || this.isNew) return next();
+
+    this.passwordChangedAt = Date.now() - 2000;
+    next();
+})
+
 // Help create wallet for user during sign up.
 userSchema.pre('save', async function(next){
 
@@ -83,6 +94,18 @@ userSchema.pre('save', async function(next){
 userSchema.methods.passwordCheck = async function (plainPassword,hashedPassword){
 
     return await bcrypt.compare(plainPassword,hashedPassword);
+};
+
+// Method to check the time user changed their password
+userSchema.methods.passwordChangedAfterTokenIssued = function (JWT_iat){
+
+    if(this.passwordChangedAt){
+        //converting passwordChangedAt to timestamp
+        const timeChange = parseInt(this.passwordChangedAt.getTime()/1000,10);
+        return JWT_iat < timeChange;
+    }
+
+    return false;
 };
 
 // generate token for verification or password reset

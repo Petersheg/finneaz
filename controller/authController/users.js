@@ -18,6 +18,8 @@ const sendTokenAsResponse = (statusCode,user,res) =>{
     
     res.cookie('token',token,{maxAge:24 * 60 * 60 * 1000}); //Expires After 24 hours
 
+    user.select("userFullName");
+
     res.status(statusCode).json({
         status : 'success',
         token,
@@ -60,7 +62,7 @@ exports.signup = catchAsync(
             
 
             try{
-                await sendEmail({
+                await sendAnyEmail({
                     email : user.userEmail,
                     subject : `WELCOME ${user.userFullName}, KINDLY ACTIVATE YOUR EMAIL.`,
                     message 
@@ -168,7 +170,11 @@ exports.protect = catchAsync(
 
         // Check if user still exist
         if(!currentUser){
-            return next(new AppError('Invalid token, kindly re login and try again'));
+            return next(new AppError('Invalid token, kindly re login and try again',401));
+        }
+
+        if(currentUser.passwordChangedAfterTokenIssued(userValidate.iat)){
+            return next(new AppError('You recently changed your password, kindly re-login',401));
         }
 
         req.user = currentUser; //Set current user on req for later user.
@@ -247,7 +253,7 @@ exports.resetPassword = catchAsync(
         sendTokenAsResponse(200,user,res);
         
     }
-)
+);
 
 exports.updatePassword = catchAsync(
     async (req,res,next)=>{
@@ -270,4 +276,4 @@ exports.updatePassword = catchAsync(
 
         sendTokenAsResponse(200,currentUser,res);
     }
-)
+);
