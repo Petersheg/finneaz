@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
 
     userFullName : {
         type : String,
-        required : [true, 'Name is required'],
+       required : [true, 'Name is required'],
         maxLength : [255, 'Name is too long'],
     },
 
@@ -32,10 +32,9 @@ const userSchema = new mongoose.Schema({
         validate : [validator.isEmail,'Kindly provide a valid email address'] //To validate Email
     },
 
-    emailConfirmation : {
-        type : String,
-        enum : ['Pending','Activated'],
-        default : 'Pending'
+    emailConfirmationStatus : {
+        type : Boolean,
+        default : false
     },
 
     password :  {
@@ -115,7 +114,7 @@ userSchema.methods.generateLinkToken = function(){
 
     const hashedLinkToken = crypto.createHash('sha256').update(plainLinkToken).digest('hex');
     this.linkToken = hashedLinkToken;
-    this.linkTokenExpires = Date.now() + 10 * 60 * 1000; //Expires After 10 minutes
+    this.linkTokenExpires = Date.now() + 24 * 60 * 60 * 1000; //Expires After 24 hours
 
     // console.log({plainLinkToken}, {hashedLinkToken}, this.linkTokenExpires);
 

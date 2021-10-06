@@ -3,31 +3,9 @@ const jwt = require('jsonwebtoken');
 const User = require('./../../model/userModel');
 const catchAsync = require('./../../utility/catchAsync');
 const AppError = require('./../../utility/appError');
-const sendEmail = require('../../utility/emails/sendEmail');
 const sendAnyEmail = require('../../utility/emails/sendGrid');
-
-const generateJWToken = (id) => {
-
-    return jwt.sign({id},process.env.JWT_SECRET,{
-        expiresIn : process.env.JWT_EXPIRED_AFTER
-    });
-}
-
-const sendTokenAsResponse = (statusCode,user,res) =>{
-    const token = generateJWToken(user._id);
-    
-    res.cookie('token',token,{maxAge:24 * 60 * 60 * 1000}); //Expires After 24 hours
-
-    user.select("userFullName");
-
-    res.status(statusCode).json({
-        status : 'success',
-        token,
-        data : {
-            user
-        }
-    })
-}
+const sentVerificationMail = require('../../utility/emails/sendVerificationEmail');
+const helperFunction = require('../../utility/helperFunction');
 
 exports.signup = catchAsync(
     async (req, res, next) => {
@@ -41,49 +19,12 @@ exports.signup = catchAsync(
             confirmPassword : req.body.confirmPassword,
         });
 
-        const token = generateJWToken(user._id);
+        const token =  helperFunction.generateJWToken(user._id);
 
         // If token has been generated then send email to userEmail
 
         if(token){
-
-            const tokenLink = user.generateLinkToken();
-            await user.save({validateBeforeSave : false});
-
-            const activationLink = `${req.get('host')}/api/v1/users/verify_email/${tokenLink}`;
-            //console.log(req);${req.protocol}
-            console.log(activationLink);
-
-            const message = `<h3> Hi ${user.userFullName}</h3>
-            <p> You must verify your email address to complete your registration
-                Kindly click on the <a href = ${activationLink}> activation link </a> 
-                to complete your registration.
-            </p>`
-            
-
-            try{
-                await sendAnyEmail({
-                    email : user.userEmail,
-                    subject : `WELCOME ${user.userFullName}, KINDLY ACTIVATE YOUR EMAIL.`,
-                    message 
-                });
-
-                res.status(201).json({
-                    status: "success",
-                    message : "Message sent, Kindly check your email for email activation ",
-                    token,
-                    data : {
-                        user
-                    }
-                })
-
-            }catch(err){
-                user.linkToken = undefined,
-                user.linkTokenExpires = undefined
-
-                await user.save({validateBeforeSave : false});
-                return next( new AppError('Message sending failed',500));
-            }
+            await sentVerificationMail.sentVerificationMail(user,req,res,next);
         };
     }
 )
@@ -103,7 +44,7 @@ exports.verifyEmail = catchAsync(
 
         try{
             // If user exist set email confirmation to activated and delete linkToken.
-            user.emailConfirmation = 'Activated'
+            user.emailConfirmationStatus = true;
 
             user.linkToken = undefined;
             user.linkTokenExpires = undefined;
@@ -140,13 +81,12 @@ exports.login = catchAsync(
         }
 
         // If user do not verify their email, throw error.
-        if(user.emailConfirmation === "Pending"){
+        if(!user.emailConfirmationStatus){
             return next(new AppError(`Hi ${user.userName} Kindly verify your email before you log in.`,401))
         }
 
         // Else send user new token
-        sendTokenAsResponse(200,user,res);
-        console.log(req.cookies)
+        helperFunction.sendTokenAsResponse(200,user,res);
     }
 )
 
@@ -207,11 +147,15 @@ exports.forgotPassword = catchAsync(
 
         try{
 
-            await sendEmail({
+            let isSent = await sendAnyEmail({
                 email : user.userEmail,
                 subject : 'Reset Password Email (Expires After 10 minutes)',
                 message
             });
+
+            if(isSent !== 202){
+                return next(new AppError("Error sending email kindly try again",440))
+            }
 
             res.status(200).json({
                 status : 'success',
@@ -250,7 +194,7 @@ exports.resetPassword = catchAsync(
         user.linkTokenExpires = undefined;
         await user.save();
 
-        sendTokenAsResponse(200,user,res);
+        helperFunction.sendTokenAsResponse(200,user,res);
         
     }
 );
@@ -274,6 +218,6 @@ exports.updatePassword = catchAsync(
         currentUser.confirmPassword = req.body.confirmPassword;
         await currentUser.save();
 
-        sendTokenAsResponse(200,currentUser,res);
+        helperFunction.sendTokenAsResponse(200,currentUser,res);
     }
 );

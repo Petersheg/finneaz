@@ -7,6 +7,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const app = express();
 const userRoute = require('./router/user');
 const checkRoute = require('./router/check');
+const resentEmailRoute = require('./router/resendEmail');
 const globalErrorHandler = require('./controller/errorController/validation');
 const AppError = require('./utility/appError');
 
@@ -26,7 +27,7 @@ app.use(cookieParser());
 
 app.use('/api/v1/users',userRoute);
 app.use('/api/v1/check',checkRoute);
-
+app.use('/api/v1/resendemail',resentEmailRoute);
 
 
 // Handle unregister routes.
