@@ -106,8 +106,8 @@ exports.protect = catchAsync(
 
         // Validate Token
         const userValidate = jwt.verify(token,process.env.JWT_SECRET);
-        const currentUser = await User.findById(userValidate.id).select('+password');
-
+        const currentUser = await User.findById(userValidate.userId).select('+password');
+        
         // Check if user still exist
         if(!currentUser){
             return next(new AppError('Invalid token, kindly re login and try again',401));

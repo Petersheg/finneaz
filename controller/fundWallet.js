@@ -9,6 +9,7 @@ exports.fundWallet = catchAsync(
 
         const currentUser = req.user;
         const userId = req.params.userId;
+        const toBaseCurrency = 100;
 
         if(currentUser._id != userId || !userId){
             return next(new AppError('Invalid User',400));
@@ -33,7 +34,7 @@ exports.fundWallet = catchAsync(
         }
 
         let data = {
-            amount : req.body.amount,
+            amount : req.body.amount * toBaseCurrency,
             email : currentUser.userEmail,
             first_name : currentUser.userFullName
         }
@@ -60,10 +61,10 @@ exports.fundWallet = catchAsync(
                     const verifyURL = process.env.PAYSTACK_VERIFY_URL.replace(':reference',reference);
 
                     const verifyResponse = await service.verifyPayStack(headers,verifyURL);
-                    let verified = verifyResponse.data.status //&& verifyResponse.data.data.status === "success";
+                    let verified = verifyResponse.data.status && verifyResponse.data.data.status === "success";
 
                     if( verified ){
-                        const requestedAmount = verifyResponse.data.data.amount/100;
+                        const requestedAmount = verifyResponse.data.data.amount/toBaseCurrency;
                         await service.creditWallet(requestedAmount );
                         currentUser.save({validateBeforeSave : false});
 
@@ -75,7 +76,6 @@ exports.fundWallet = catchAsync(
             }
 
         }catch(err){
-            console.log(err.message)
             return next(new AppError("Something went wrong, kindly try again",440));
         }
     }
