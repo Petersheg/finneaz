@@ -121,6 +121,16 @@ userSchema.methods.generateLinkToken = function(){
     return plainLinkToken;
 }
 
+// delete unwanted model properties
+userSchema.set('toJSON', {
+    transform: (_, returnedObject) => {
+      returnedObject.id = returnedObject._id.toString();
+      delete returnedObject._id;
+      delete returnedObject.__v;
+      delete returnedObject.password;
+    },
+});
+
 const User = mongoose.model('User',userSchema);
 
 module.exports = User;

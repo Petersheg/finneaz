@@ -45,7 +45,7 @@ exports.fundWallet = catchAsync(
 
             if(initTransaction.data.status){
                 
-                // Send checkOut uri t0 user;
+                // Send checkOut ur t0 user;
                 const checkOutURL = initTransaction.data.data.authorization_url;
 
                 res.status(200).json({
@@ -65,7 +65,7 @@ exports.fundWallet = catchAsync(
 
                     if( verified ){
                         const requestedAmount = verifyResponse.data.data.amount/toBaseCurrency;
-                        await service.creditWallet(requestedAmount );
+                        await service.creditWallet(requestedAmount);
                         currentUser.save({validateBeforeSave : false});
 
                     }else{

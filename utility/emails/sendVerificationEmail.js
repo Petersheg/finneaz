@@ -21,10 +21,13 @@ exports.sentVerificationMail = async (user,req,res,next) => {
 
     if (req.originalUrl.includes("signup")) {
 
-        token = token = helperFunction.generateJWToken(user._id);
+        user.toJSON();
+        token = helperFunction.generateJWToken(user._id);
+
         data = {
             user
         }
+        
     }else{
 
         token = undefined;
