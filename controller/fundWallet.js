@@ -61,7 +61,7 @@ exports.fundWallet = catchAsync(
                     const verifyURL = process.env.PAYSTACK_VERIFY_URL.replace(':reference',reference);
 
                     const verifyResponse = await service.verifyPayStack(headers,verifyURL);
-                    let verified = verifyResponse.data.status && verifyResponse.data.data.status === "success";
+                    let verified = verifyResponse.data.status //&& verifyResponse.data.data.status === "success";
 
                     if( verified ){
                         const requestedAmount = verifyResponse.data.data.amount/toBaseCurrency;
