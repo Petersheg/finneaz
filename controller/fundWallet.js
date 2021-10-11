@@ -12,7 +12,7 @@ exports.fundWallet = catchAsync(
         const toBaseCurrency = 100;
 
         if(currentUser._id != userId || !userId){
-            return next(new AppError('Invalid User',400));
+            return next(new AppError('Invalid User',404));
         }
 
         if(!userId){
@@ -35,8 +35,7 @@ exports.fundWallet = catchAsync(
 
         let data = {
             amount : req.body.amount * toBaseCurrency,
-            email : currentUser.userEmail,
-            first_name : currentUser.userFullName
+            email : currentUser.userEmail
         }
 
         try{
@@ -76,7 +75,8 @@ exports.fundWallet = catchAsync(
             }
 
         }catch(err){
-            return next(new AppError("Something went wrong, kindly try again",440));
+            console.log(err)
+            return next(new AppError("Something went wrong, kindly try again",401));
         }
     }
 )
