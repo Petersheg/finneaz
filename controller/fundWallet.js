@@ -76,7 +76,7 @@ exports.fundWallet = catchAsync(
 
         }catch(err){
             console.log(err)
-            return next(new AppError("Something went wrong, kindly try again",401));
+            return next(new AppError("Bad request, kindly try again",401));
         }
     }
 )
