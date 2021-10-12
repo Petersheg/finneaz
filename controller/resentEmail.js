@@ -1,7 +1,7 @@
 const catchAsync = require('../utility/catchAsync');
 const User = require('./../model/userModel');
 const AppError = require('../utility/appError');
-const sentVerificationMail = require('../utility/emails/sendVerificationEmail'); 
+const send = require('../utility/emails/sendVerificationEmail'); 
 
 exports.resentEmail = catchAsync(
     
@@ -16,7 +16,7 @@ exports.resentEmail = catchAsync(
         }
 
         if(user.emailConfirmationStatus){
-            return next(new AppError("Your account is already activated"));
+            return next(new AppError("Your account is already activated",406));
         }
 
         // Delete linkToken and linkTokenExpires
@@ -24,6 +24,6 @@ exports.resentEmail = catchAsync(
         user.linkTokenExpires = undefined
         await user.save({validateBeforeSave : false});
 
-        await sentVerificationMail.sentVerificationMail(user,req, res,next);
+        await send.sentVerificationMail(user,req, res,next);
     }
 )

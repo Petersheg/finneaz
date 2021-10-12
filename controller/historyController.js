@@ -5,6 +5,7 @@ const History = require('../model/vehicleHistory');
 exports.getHistoryByUser = catchAsync(
 
     async (req,res,next)=>{
+
         let filter = {};
 
         const userId = req.params.userId;
@@ -22,7 +23,7 @@ exports.getHistoryByUser = catchAsync(
         const vehicleHistories = await History.find(filter)//.populate('users');
 
         if(!vehicleHistories || vehicleHistories.length === 0){
-            return next(new AppError('No history available for this user'));
+            return next(new AppError('No history available for this user',404));
         }
 
         res.status(200).json({

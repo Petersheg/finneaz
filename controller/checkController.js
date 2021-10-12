@@ -3,47 +3,67 @@ const catchAsync = require('../utility/catchAsync');
 const AppError = require('../utility/appError');
 const History = require('../model/vehicleHistory');
 const Services = require('../services/main');
-
+const logger = require('../utility/logger');
 
 async function getCarReport(req){
-
-    const VIN = req.query.vin;
-    
-    const reportURL = 
-    `${process.env.CARFAX_BASE_URL}/report?key=${process.env.CARFAX_KEY}&vin=${VIN}&type=carfax`;
-
-    // if report is available then make call to get the information
-    let reportHTML = await axios({
-        method : 'get',
-        url : reportURL
-    })
-
-    // Creat new history
-    const history = await History.create({
-        vin : VIN,
+    try{
         
-    }); 
-    history.users.push(req.user._id);
-    await history.save({runValidators: true});
-
+        const VIN = req.query.vin;
     
-    return reportHTML.data;
+        const reportURL = 
+        `${process.env.CARFAX_BASE_URL}/report?key=${process.env.CARFAX_KEY}&vin=${VIN}&type=carfax`;
+
+        // if report is available then make call to get the information
+        let reportHTML = await axios({
+            method : 'get',
+            url : reportURL
+        })
+
+        // Creat new history
+        const history = await History.create({
+            vin : VIN,
+            
+        }); 
+        history.users.push(req.user._id);
+        await history.save({runValidators: true});
+
+        
+        return reportHTML.data;
+
+    }catch(err){
+
+        logger.Report({
+            service: 'controller::checkController::getCarReport',
+            message : err.message,
+        });
+
+    }
 }
 
 async function checkAvailability(req){
-    const VIN = req.query.vin;
 
-    const checkURL = 
-    `${process.env.CARFAX_BASE_URL}/check?key=${process.env.CARFAX_KEY}&vin=${VIN}&type=carfax`;
+    try{
+        const VIN = req.query.vin;
 
-    
-    // call to get the report availability
-    const checkStatus = await axios({
-        method : 'get',
-        url : checkURL
-    })
+        const checkURL = 
+        `${process.env.CARFAX_BASE_URL}/check?key=${process.env.CARFAX_KEY}&vin=${VIN}&type=carfax`;
 
-    return checkStatus.data.status;
+        
+        // call to get the report availability
+        const checkStatus = await axios({
+            method : 'get',
+            url : checkURL
+        })
+
+        return checkStatus.data.status;
+
+    }catch(err){
+
+        logger.Report({
+            service : 'controller::checkController::checkAvailability',
+            message : err.message,
+        });
+    }
 }
 
 exports.checkReportStatus = catchAsync(
@@ -118,7 +138,7 @@ exports.checkReportStatus = catchAsync(
                     report 
                 })
             }else{
-                return next(new AppError('Your Account is not sufficient',400))
+                return next(new AppError('Your Account is not sufficient',400));
             }
         }
     }

@@ -2,6 +2,7 @@ const axios = require('axios')
 const catchAsync = require('../utility/catchAsync');
 const AppError = require('../utility/appError');
 const Services = require('../services/main');
+const logger = require('../utility/logger');
 
 exports.fundWallet = catchAsync(
 
@@ -68,15 +69,24 @@ exports.fundWallet = catchAsync(
                         currentUser.save({validateBeforeSave : false});
 
                     }else{
-                        console.log("Payment is abandoned");
+
+                        logger.Report({
+                            service : 'controller::fundWallet::fundWallet',
+                            message : 'Payment is abandoned',
+                        })
                     }
                 }
 
             }
 
         }catch(err){
-            console.log(err)
-            return next(new AppError("Bad request, kindly try again",401));
+
+            logger.Report({
+                service : 'controller::fundWallet',
+                message : JSON.stringify(err.response.data.message),
+            });
+
+            return next(new AppError(err.response.data.message,500));
         }
     }
 )

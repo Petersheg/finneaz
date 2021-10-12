@@ -16,7 +16,7 @@ exports.getTransactionByUser = catchAsync(
         }
 
         if(!userId){
-            return next(new AppError('You can not access this route',409));
+            return next(new AppError('You can not access this route',403));
         }
 
         if(userId  || req.query){

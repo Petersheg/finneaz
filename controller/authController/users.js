@@ -4,6 +4,7 @@ const User = require('./../../model/userModel');
 const catchAsync = require('./../../utility/catchAsync');
 const AppError = require('./../../utility/appError');
 const sendAnyEmail = require('../../utility/emails/sendGrid');
+const logger = require('./../../utility/logger');
 const sentVerificationMail = require('../../utility/emails/sendVerificationEmail');
 const helperFunction = require('../../utility/helperFunction');
 
@@ -39,7 +40,7 @@ exports.verifyEmail = catchAsync(
         const user = await User.findOne({linkToken : hashedLinkToken});//Look up user base on linkToken
 
         if(!user){
-            return next(new AppError('User does not exist'))
+            return next(new AppError('User does not exist',404))
         }
 
         try{
@@ -57,7 +58,13 @@ exports.verifyEmail = catchAsync(
             })
 
         }catch(err){
-            return next( new AppError('something went wrong, kindly try again',405));
+
+            logger.Report({
+                services : 'controller::authController::user::verifyEmail',
+                message : err.message
+            })
+
+            return next( new AppError('Can\'t validate user, kindly try again',500));
         }
     }
 )
@@ -147,26 +154,30 @@ exports.forgotPassword = catchAsync(
 
         try{
 
-            let isSent = await sendAnyEmail({
+            await sendAnyEmail({
                 email : user.userEmail,
                 subject : 'Reset Password Email (Expires After 10 minutes)',
                 message
             });
 
-            if(isSent !== 202){
-                return next(new AppError("Error sending email kindly try again",440))
-            }
-
             res.status(200).json({
                 status : 'success',
-                message : 'Reset mail sent successfully, kindly check your email to continue'
+                message : 'Reset mail sent successfully, kindly check your email'
             });
 
         }catch(err){
+
             user.linkToken = undefined;
             user.linkTokenExpires = undefined;
 
             await user.save({validateBeforeSave : false});
+
+            // Slack Error Logger
+            logger.Report({
+                service : 'controller::authController::users::forgotPassword',
+                message : err.message
+            })
+
             return next(new AppError('Error sending email, kindly try again',500))
         }
     }
