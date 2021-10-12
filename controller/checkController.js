@@ -82,7 +82,9 @@ exports.checkReportStatus = catchAsync(
 
         const service = new Services(obj,req.user);
 
-        if(vinExistInHistory){
+        // vinExistInHistory 
+        // I have to silent this part of the implementation for frontend services
+        if(false){
 
             // check if user making this request already did before
             const userExist =  await History.findOne({
@@ -119,27 +121,28 @@ exports.checkReportStatus = catchAsync(
         }
 
         if(!vinExistInHistory){
-
-            let message = `Vehicle report with the ${VIN} has generated!`;
-
-            // Check VIN availability
-            const vinIsAvailable = await checkAvailability(req);
-
-            if(!vinIsAvailable){
-                return next(new AppError('Car report is not available',404));
-            }
-
-            if(vinIsAvailable && await service.debitWallet(5)){
-                const report = await getCarReport(req);
-
-                res.status(200).json({
-                    status : true,
-                    message,
-                    report 
-                })
-            }else{
-                return next(new AppError('Your Account is not sufficient',400));
-            }
+            // Bellow codes belongs in here!!!!
         }
-    }
+
+        let message = `Vehicle report with the ${VIN} has generated!`;
+
+        // Check VIN availability
+        const vinIsAvailable = await checkAvailability(req);
+
+        if(!vinIsAvailable){
+            return next(new AppError('Car report is not available',404));
+        }
+
+        if(vinIsAvailable && await service.debitWallet(5)){
+            const report = await getCarReport(req);
+
+            res.status(200).json({
+                status : true,
+                message,
+                report 
+            })
+        }else{
+            return next(new AppError('Your Account is not sufficient',400));
+        }
+ }
 );
