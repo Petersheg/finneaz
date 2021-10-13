@@ -81,12 +81,12 @@ exports.fundWallet = catchAsync(
 
         }catch(err){
 
-            logger.Report({
-                service : 'controller::fundWallet',
-                message : JSON.stringify(err.response.data.message),
-            });
+            // logger.Report({
+            //     service : 'controller::fundWallet',
+            //     message : err.response.data.message || "something went wrong"
+            // });
 
-            return next(new AppError(err.response.data.message,500));
+            return next(new AppError(err.response.data.message || "something went wrong",500));
         }
     }
 )

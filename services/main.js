@@ -25,8 +25,10 @@ class Services {
             this.user.save({validateBeforeSave : false});
 
             //Set the amount and Create a debit transaction
-            this.obj.amount = toDebit;
-            await this.createTransaction();
+            if(toDebit > 0){
+                this.obj.amount = toDebit;
+                await this.createTransaction();
+            }
     
             return true;
         }
