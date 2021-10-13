@@ -89,7 +89,7 @@ exports.generateJWToken = (id) => {
     });
 };
 
-exports.sendTokenAsResponse = (statusCode,user,res) =>{
+exports.sendTokenAsResponse = (statusCode,user,res,message) =>{
     const userId = user._id;
     
     const token = jwt.sign({userId},process.env.JWT_SECRET,{
@@ -100,6 +100,7 @@ exports.sendTokenAsResponse = (statusCode,user,res) =>{
 
     res.status(statusCode).json({
         status : 'success',
+        message,
         token,
         data : {
             user

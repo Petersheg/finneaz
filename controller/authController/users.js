@@ -74,6 +74,8 @@ exports.login = catchAsync(
         // get user credentials from request body
         const {email,password} = req.body;
 
+        const message = "login successful"
+
         // Check if any field is not missing
         if(!email || !password){
             return next(new AppError('Email and Password is required',400));
@@ -93,7 +95,7 @@ exports.login = catchAsync(
         }
 
         // Else send user new token
-        helperFunction.sendTokenAsResponse(200,user,res);
+        helperFunction.sendTokenAsResponse(200,user,res,message);
     }
 )
 
@@ -188,6 +190,8 @@ exports.resetPassword = catchAsync(
         const plainResetToken = req.params.resetToken;
         const hashedResetToken = crypto.createHash('sha256').update(plainResetToken).digest('hex');
 
+        const message = "Password was reset successfully";
+        
         const user = await User.findOne({
             linkToken : hashedResetToken,
             linkTokenExpires : {$gt  : Date.now() }
@@ -205,7 +209,7 @@ exports.resetPassword = catchAsync(
         user.linkTokenExpires = undefined;
         await user.save();
 
-        helperFunction.sendTokenAsResponse(200,user,res);
+        helperFunction.sendTokenAsResponse(200,user,res,message);
         
     }
 );
@@ -213,6 +217,7 @@ exports.resetPassword = catchAsync(
 exports.updatePassword = catchAsync(
     async (req,res,next)=>{
         const currentUser = req.user;
+        const message = "Password updated!";
 
         if(!currentUser){
             return next(new AppError('Invalid token, kindly try and log in again.',401));
@@ -229,6 +234,6 @@ exports.updatePassword = catchAsync(
         currentUser.confirmPassword = req.body.confirmPassword;
         await currentUser.save();
 
-        helperFunction.sendTokenAsResponse(200,currentUser,res);
+        helperFunction.sendTokenAsResponse(200,currentUser,res,message);
     }
 );
