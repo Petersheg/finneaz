@@ -33,7 +33,7 @@ const corsOptions = {
 }
 
 // Enable cors on all routes
-app.use(cors(corsOptions));
+app.use(cors());
 
 // To remove unwanted characters from the query:
 app.use(mongoSanitize());
