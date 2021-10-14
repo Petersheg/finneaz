@@ -74,7 +74,7 @@ exports.login = catchAsync(
         // get user credentials from request body
         const {email,password} = req.body;
 
-        const message = "login successful"
+        const message = "login successful" 
 
         // Check if any field is not missing
         if(!email || !password){

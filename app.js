@@ -10,9 +10,30 @@ const checkRoute = require('./router/check');
 const resentEmailRoute = require('./router/resendEmail');
 const globalErrorHandler = require('./controller/errorController/validation');
 const AppError = require('./utility/appError');
+const logger = require('./utility/logger');
 
 
 app.use(express.json());
+
+// Cors configuration
+const whitelist = ['http://localhost:3000/','https://checkman.com'];
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+
+        logger.Report({
+            service : 'app::corsOptions',
+            message : 'Not allowed by CORS'
+        })
+        callback(new AppError('Not allowed by CORS',405))
+    }
+  }
+}
+
+// Enable cors on all routes
+app.use(cors(corsOptions));
 
 // To remove unwanted characters from the query:
 app.use(mongoSanitize());
@@ -20,8 +41,6 @@ app.use(mongoSanitize());
 app.use(helmet());
 // Prevent against xss attacks
 app.use(xss());
-// Enable cors on all routes
-app.use(cors());
 // To make use cookieParser
 app.use(cookieParser());
 
