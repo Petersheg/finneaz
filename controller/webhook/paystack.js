@@ -15,11 +15,13 @@ exports.webhookURL = async (req,res)=>{
         // Retrieve the request's body
             let event = req.body;
 
+            let email = event.data.customer.email;
+            const currentUser = await User.findOne({userEmail : email});
+
         // Do something with event 
             const data = {
 
                 reference : event.data.reference,
-                email : event.data.customer.email,
 
                 headers : {
                     authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
@@ -33,7 +35,6 @@ exports.webhookURL = async (req,res)=>{
                     user : currentUser.id
                 }
             }
-            const currentUser = await User.findOne({userEmail : data.email});
             
             const service = new Services(data.transactionObject,currentUser);
             let verifyResponse,verified;
@@ -62,7 +63,7 @@ exports.webhookURL = async (req,res)=>{
                 // }
             }
             console.log(verifyResponse);
-            
+
             // logger.Report({
             //     service : "controller::webhook::payStack",
             //     message : JSON.stringify(verifyResponse)
