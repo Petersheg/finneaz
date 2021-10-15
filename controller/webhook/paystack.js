@@ -1,9 +1,10 @@
 const crypto = require('crypto');
 const secret = process.env.PAYSTACK_SECRET_KEY;
 const logger = require('../../utility/logger');
+const User = require('../../model/userModel');
 
 
-exports.webhookURL = (req,res)=>{
+exports.webhookURL = async (req,res)=>{
     //validate event
     const hash = crypto.createHmac('sha512', secret).update(JSON.stringify(req.body)).digest('hex');
     let event;
@@ -16,11 +17,12 @@ exports.webhookURL = (req,res)=>{
         reference : event.data.reference,
         email : event.data.customer.email
      }
+     const currentUser = await User.findOne({userEmail : email});
      
      
         logger.Report({
             service : "controller::webhook::payStack",
-            message : JSON.stringify(data)
+            message : JSON.stringify(currentUser)
         })
 
 
