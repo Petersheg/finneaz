@@ -49,34 +49,32 @@ exports.webhookURL = async (req,res)=>{
 
                 verified = verifyResponse.data.status && verifyResponse.data.data.status === "success";
 
-                // if( verified ){
-                //     const requestedAmount = verifyResponse.data.data.amount/toBaseCurrency;
-                //     await service.creditWallet(requestedAmount);
-                //     currentUser.save({validateBeforeSave : false});
+                if( verified ){
+                    const requestedAmount = verifyResponse.data.data.amount/toBaseCurrency;
+                    await service.creditWallet(requestedAmount);
+                    currentUser.save({validateBeforeSave : false});
 
-                // }else{
+                }else{
 
-                //     logger.Report({
-                //         service : 'controller::fundWallet',
-                //         message : 'Payment is abandoned',
-                //     })
-                // }
+                    logger.Report({
+                        service : 'controller::fundWallet',
+                        message : 'Payment is abandoned',
+                    })
+                }
             }
-            console.log(verifyResponse);
-
-            // logger.Report({
-            //     service : "controller::webhook::payStack",
-            //     message : JSON.stringify(verifyResponse)
-            // })
 
         }
-        res.send(200);
+        res.sendStatus(200);
 
     }catch(err){
-        console.log(err.message);
+
         logger.Report({
             service : "controller::webhook::payStack",
             message : err.message
         })
     }
+}
+
+exports.webhookSuccess = async (req,res)=>{
+
 }
