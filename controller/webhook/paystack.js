@@ -25,7 +25,7 @@ exports.webhookURL = async (req,res)=>{
                 'content-type': 'application/json'
             },
 
-            transactionObject = {
+            transactionObject : {
                 type : 'credit',
                 status : 'successful',
                 reason : 'fund wallet',
