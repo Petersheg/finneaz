@@ -1,6 +1,4 @@
-const axios = require('axios');
 const catchAsync = require('../utility/catchAsync');
-const AppError = require('../utility/appError');
 const History = require('../model/vehicleHistory');
 const helperFunction = require('../utility/helperFunction');
 

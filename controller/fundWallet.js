@@ -61,7 +61,7 @@ exports.fundWallet = catchAsync(
                     const verifyURL = process.env.PAYSTACK_VERIFY_URL.replace(':reference',reference);
 
                     const verifyResponse = await service.verifyPayStack(headers,verifyURL);
-                    let verified = verifyResponse.data.status //&& verifyResponse.data.data.status === "success";
+                    let verified = verifyResponse.data.status && verifyResponse.data.message === "Verification successful";
 
                     if( verified ){
                         const requestedAmount = verifyResponse.data.data.amount/toBaseCurrency;
@@ -71,7 +71,7 @@ exports.fundWallet = catchAsync(
                     }else{
 
                         logger.Report({
-                            service : 'controller::fundWallet::fundWallet',
+                            service : 'controller::fundWallet',
                             message : 'Payment is abandoned',
                         })
                     }
@@ -81,12 +81,12 @@ exports.fundWallet = catchAsync(
 
         }catch(err){
 
-            // logger.Report({
-            //     service : 'controller::fundWallet',
-            //     message : err.response.data.message || "something went wrong"
-            // });
+            logger.Report({
+                service : 'controller::fundWallet',
+                message : err.response.data.message ?? "something went wrong"
+            });
 
-            return next(new AppError(err.response.data.message || "something went wrong",500));
+            return next(new AppError(err.response.data.message ?? "something went wrong",500));
         }
     }
 )

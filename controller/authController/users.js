@@ -64,7 +64,7 @@ exports.verifyEmail = catchAsync(
                 message : err.message
             })
 
-            return next( new AppError('Can\'t validate user, kindly try again',500));
+            return next( new AppError('Something went wrong, kindly try again',500));
         }
     }
 )
