@@ -11,11 +11,15 @@ exports.webhookURL = (req,res)=>{
     if (hash == req.headers['x-paystack-signature']) {
      // Retrieve the request's body
         event = req.body;
-     // Do something with event  
+     // Do something with event 
+        console.log(event);
+        
         logger.Report({
             service : "controller::webhook::payStack",
             message : event
         })
+
+
 
     }
     res.send(200);
