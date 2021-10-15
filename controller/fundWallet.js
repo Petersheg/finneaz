@@ -57,8 +57,6 @@ exports.fundWallet = catchAsync(
                     }
                 })
                 
-                
-
             }
 
         }catch(err){

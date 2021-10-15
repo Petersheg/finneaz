@@ -61,8 +61,6 @@ exports.webhookURL = async (req,res)=>{
             // }
         }
 
-        console.log(verified);
-        
         logger.Report({
             service : "controller::webhook::payStack",
             message : JSON.stringify(verifyResponse)
