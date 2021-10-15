@@ -22,6 +22,7 @@ exports.webhookURL = async (req,res)=>{
             const data = {
 
                 reference : event.data.reference,
+                toBaseCurrency : 100,
 
                 headers : {
                     authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
@@ -50,7 +51,7 @@ exports.webhookURL = async (req,res)=>{
                 verified = verifyResponse.data.status && verifyResponse.data.data.status === "success";
 
                 if( verified ){
-                    const requestedAmount = verifyResponse.data.data.amount/toBaseCurrency;
+                    const requestedAmount = verifyResponse.data.data.amount/data.toBaseCurrency;
                     await service.creditWallet(requestedAmount);
                     currentUser.save({validateBeforeSave : false});
 
