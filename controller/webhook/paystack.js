@@ -17,7 +17,7 @@ exports.webhookURL = async (req,res)=>{
         reference : event.data.reference,
         email : event.data.customer.email
      }
-     const currentUser = await User.findOne({userEmail : email});
+     const currentUser = await User.findOne({userEmail : data.email});
      
      
         logger.Report({
