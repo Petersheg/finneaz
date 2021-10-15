@@ -12,12 +12,40 @@ exports.webhookURL = (req,res)=>{
      // Retrieve the request's body
         event = req.body;
      // Do something with event 
+     const data = {
+        reference : event.data.reference,
+        email : event.data.customer.email
+     }
+     
+     
         logger.Report({
             service : "controller::webhook::payStack",
-            message : JSON.stringify(event)
+            message : JSON.stringify(data)
         })
 
 
+        // if (event.data.status === "success"){
+
+        //     // VERIFY THE TRANSACTION BY MAKING A GET CALL
+        //     const reference = event.data.reference;
+        //     const verifyURL = process.env.PAYSTACK_VERIFY_URL.replace(':reference',reference);
+
+        //     const verifyResponse = await service.verifyPayStack(headers,verifyURL);
+        //     let verified = verifyResponse.data.status && verifyResponse.data.data.status === "success";
+
+        //     if( verified ){
+        //         const requestedAmount = verifyResponse.data.data.amount/toBaseCurrency;
+        //         await service.creditWallet(requestedAmount);
+        //         currentUser.save({validateBeforeSave : false});
+
+        //     }else{
+
+        //         logger.Report({
+        //             service : 'controller::fundWallet',
+        //             message : 'Payment is abandoned',
+        //         })
+        //     }
+        // }
 
     }
     res.send(200);

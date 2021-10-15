@@ -27,7 +27,7 @@ exports.fundWallet = catchAsync(
             user : currentUser._id
         }
         
-        const service = new Services(transactionObject,currentUser)
+        const service = new Services(transactionObject,currentUser);
 
         let headers = {
             authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
@@ -47,35 +47,17 @@ exports.fundWallet = catchAsync(
                 
                 // Send checkOut ur t0 user;
                 const checkOutURL = initTransaction.data.data.authorization_url;
-
-                res.status(200).json({
-                    status : true,
-                    checkOutURL
-                })
-                
                 const reference = initTransaction.data.data.reference;
 
-                if (checkOutURL){
-
-                    // VERIFY THE TRANSACTION BY MAKING A GET CALL
-                    const verifyURL = process.env.PAYSTACK_VERIFY_URL.replace(':reference',reference);
-
-                    const verifyResponse = await service.verifyPayStack(headers,verifyURL);
-                    let verified = verifyResponse.data.status && verifyResponse.data.message === "Verification successful";
-
-                    if( verified ){
-                        const requestedAmount = verifyResponse.data.data.amount/toBaseCurrency;
-                        await service.creditWallet(requestedAmount);
-                        currentUser.save({validateBeforeSave : false});
-
-                    }else{
-
-                        logger.Report({
-                            service : 'controller::fundWallet',
-                            message : 'Payment is abandoned',
-                        })
+                res.status(200).json({
+                    status : "success",
+                    data : {
+                        checkOutURL,
+                        reference
                     }
-                }
+                })
+                
+                
 
             }
 

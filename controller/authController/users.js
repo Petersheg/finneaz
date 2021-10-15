@@ -217,7 +217,7 @@ exports.resetPassword = catchAsync(
 exports.updatePassword = catchAsync(
     async (req,res,next)=>{
         const currentUser = req.user;
-        const message = "Password updated!";
+        const message = "Password updated!, You have to login with new password";
 
         if(!currentUser){
             return next(new AppError('Invalid token, kindly try and log in again.',401));
@@ -225,6 +225,10 @@ exports.updatePassword = catchAsync(
 
         const currentPassword = req.body.currentPassword;
         const passCheck = await currentUser.passwordCheck(currentPassword,currentUser.password);
+
+        if(currentPassword === ""){
+            return next(new AppError('current password is required,',401))
+        }
 
         if(!passCheck) {
             return next(new AppError('current password provided is wrong,',401));
