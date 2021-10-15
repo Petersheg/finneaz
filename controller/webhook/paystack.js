@@ -12,11 +12,9 @@ exports.webhookURL = (req,res)=>{
      // Retrieve the request's body
         event = req.body;
      // Do something with event 
-        console.log(event);
-        
         logger.Report({
             service : "controller::webhook::payStack",
-            message : event
+            message : JSON.stringify(event)
         })
 
 
