@@ -3,7 +3,6 @@ const axios = require('axios')
 const Services = require('../services/main');
 const logger = require('../utility/logger');
 const AppError = require('../utility/appError');
-const catchAsync = require('../utility/catchAsync');
 const History = require('../model/vehicleHistory');
 
 async function getCarReport(req){
@@ -49,7 +48,6 @@ async function getCarReport(req){
         return reportHTML.data;
 
     }catch(err){
-        console.log(err.message)
         logger.Report({
             service: 'controller::checkController::getCarReport',
             message : err.message,
@@ -80,8 +78,6 @@ async function checkAvailability(req){
             service : 'controller::checkController::checkAvailability',
             message : err.message,
         });
-
-        console.log(err.message);
     }
 }
 
@@ -148,6 +144,10 @@ exports.callCarFaxAndDebit = async (req,res,vin,amountToDebit,next)=>{
             return next(new AppError('Your Account is not sufficient',400));
         }
     }catch(err){
-        console.log(err.message);
+
+        logger.Report({
+            service: 'controller::checkController::getCarReport',
+            message : err.message ?? "something went wrong",
+        });
     }
 }

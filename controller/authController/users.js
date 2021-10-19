@@ -144,7 +144,8 @@ exports.forgotPassword = catchAsync(
         }
 
         // generate a reset token and set it on user model;
-        const resetToken = user.generateLinkToken(); //instance method
+        const validTill = 10 // expired after 10 minutes;
+        const resetToken = user.generateLinkToken(validTill); //instance method
         await user.save({validateBeforeSave : false}); //save changes to model
 
         const resetURL = `${req.protocol}//${req.get('host')}/api/v1/users/resetpassword/${resetToken}`

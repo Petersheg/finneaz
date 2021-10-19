@@ -20,13 +20,13 @@ class MongoClass {
     };
 
     // generate token for verification or password reset
-    generateLinkToken(){
+    generateLinkToken(validTill){
         
         const plainLinkToken = crypto.randomBytes(16).toString('hex');
 
         const hashedLinkToken = crypto.createHash('sha256').update(plainLinkToken).digest('hex');
         this.linkToken = hashedLinkToken;
-        this.linkTokenExpires = Date.now() + 24 * 60 * 60 * 1000; //Expires After 24 hours
+        this.linkTokenExpires = Date.now() + validTill * 60 * 1000;
 
         return plainLinkToken;
     }

@@ -19,7 +19,11 @@ exports.getHistoryByUser = catchAsync(
             return next(new AppError('You can not access this route'));
         }
 
-        if(userId) filter = {users : userId}
+        // if(userId) filter = {users : userId}
+        if(userId  || req.query){
+            filter = {users : userId, ...req.query};
+        }
+
         const vehicleHistories = await History.find(filter)//.populate('users');
 
         if(!vehicleHistories || vehicleHistories.length === 0){

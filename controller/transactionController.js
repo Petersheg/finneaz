@@ -22,7 +22,7 @@ exports.getTransactionByUser = catchAsync(
         if(userId  || req.query){
             filter = {user : userId, ...req.query};
         }
-
+        
         const transactions = await Transaction.find(filter);
 
         if(!transactions || transactions.length === 0){

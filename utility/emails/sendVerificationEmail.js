@@ -6,7 +6,8 @@ const template = require('./emailTemplate');
 
 exports.sentVerificationMail = async (user,req,res,next) => {
     
-    const tokenLink = user.generateLinkToken();
+    const validTill = 48 * 60 //48 hours;
+    const tokenLink = user.generateLinkToken(validTill);
     await user.save({validateBeforeSave : false});
 
     const activationLink = `${req.protocol}//${req.get('host')}/api/v1/users/verifyemail/${tokenLink}`;
