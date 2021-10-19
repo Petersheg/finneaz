@@ -7,6 +7,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const app = express();
 const userRoute = require('./router/user');
 const checkRoute = require('./router/check');
+const reportAvailabilityRoute = require('./router/reportAvailability');
 const webhookRoute = require('./router/webhook');
 const resentEmailRoute = require('./router/resendEmail');
 const globalErrorHandler = require('./controller/errorController/validation');
@@ -47,6 +48,7 @@ app.use(cookieParser());
 
 app.use('/api/v1/users',userRoute);
 app.use('/api/v1/check',checkRoute);
+app.use('/api/v1/reportavailability',reportAvailabilityRoute);
 app.use('/api/v1/resendemail',resentEmailRoute);
 app.use('/api/v1/fundwallet/webhook',webhookRoute);
 

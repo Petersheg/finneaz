@@ -11,7 +11,11 @@ async function getCarReport(req){
     try{
         
         const VIN = req.query.vin;
-    
+        
+        if(!VIN){
+            return next(new AppError("You must provide a VIN",402));
+        }
+
         const reportURL = 
         `${process.env.CARFAX_BASE_URL}/report?key=${process.env.CARFAX_KEY}&vin=${VIN}&type=carfax`;
 
@@ -72,10 +76,10 @@ async function checkAvailability(req){
 
     }catch(err){
 
-        // logger.Report({
-        //     service : 'controller::checkController::checkAvailability',
-        //     message : err.message,
-        // });
+        logger.Report({
+            service : 'controller::checkController::checkAvailability',
+            message : err.message,
+        });
 
         console.log(err.message);
     }
@@ -127,8 +131,6 @@ exports.callCarFaxAndDebit = async (req,res,vin,amountToDebit,next)=>{
         if(!vinIsAvailable){
             return next(new AppError('Car report is not available',404));
         }
-    
-        console.log(vin,amountToDebit);
 
         if(vinIsAvailable && await service.debitWallet(amountToDebit)){
 
