@@ -3,6 +3,7 @@ const axios = require('axios')
 const Services = require('../services/main');
 const logger = require('../utility/logger');
 const AppError = require('../utility/appError');
+const catchAsync = require('../utility/catchAsync');
 const History = require('../model/vehicleHistory');
 
 async function getCarReport(req){
@@ -24,8 +25,6 @@ async function getCarReport(req){
         const vinExist = await History.findOne({vin : VIN});
         const userExist = await History.findOne({users : {$eq : req.user._id}});
 
-        console.log({vinExist},!userExist);
-
         if(vinExist && !userExist){
             vinExist.users.push(req.user._id);
             await vinExist.save({runValidators: true});
@@ -46,7 +45,7 @@ async function getCarReport(req){
         return reportHTML.data;
 
     }catch(err){
-
+        console.log(err.message)
         logger.Report({
             service: 'controller::checkController::getCarReport',
             message : err.message,
@@ -109,7 +108,7 @@ exports.sendTokenAsResponse = (statusCode,user,res,message) =>{
 }
 
 
-exports.callCarFaxAndDebit = async (req,res,vin,amountToDebit)=>{
+exports.callCarFaxAndDebit = async (req,res,vin,amountToDebit,next)=>{
     let message = `Vehicle report with the ${vin} has generated!`;
 
     const obj = {
@@ -119,27 +118,34 @@ exports.callCarFaxAndDebit = async (req,res,vin,amountToDebit)=>{
         user : req.user._id
     }
 
-    const service = new Services(obj,req.user);
-    // Check VIN availability
-    const vinIsAvailable = await checkAvailability(req);
+    try{
 
-    console.log({vinIsAvailable});
-    console.log(amountToDebit);
+        const service = new Services(obj,req.user);
+        // Check VIN availability
+        const vinIsAvailable = await checkAvailability(req);
 
-    if(!vinIsAvailable){
-        return next(new AppError('Car report is not available',404));
-    }
+        if(!vinIsAvailable){
+            return next(new AppError('Car report is not available',404));
+        }
+    
+        console.log(vin,amountToDebit);
 
-    if(vinIsAvailable && await service.debitWallet(amountToDebit)){
-        const report = await getCarReport(req);
+        if(vinIsAvailable && await service.debitWallet(amountToDebit)){
 
-        res.status(200).json({
-            status :'success',
-            message,
-            report 
-        })
-
-    }else{
-        return next(new AppError('Your Account is not sufficient',400));
+            const report = await getCarReport(req);
+    
+            res.status(200).json({
+                status :'success',
+                message,
+                data : {
+                    report
+                } 
+            })
+    
+        }else{
+            return next(new AppError('Your Account is not sufficient',400));
+        }
+    }catch(err){
+        console.log(err.message);
     }
 }

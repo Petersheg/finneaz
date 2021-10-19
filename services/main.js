@@ -38,7 +38,7 @@ class Services {
 
     async creditWallet(toCredit){
 
-        if(toCredit >= 1){
+        if(toCredit >= 5){
             this.user.wallet[0].amount += toCredit;
 
             this.obj.amount = toCredit;

@@ -27,9 +27,11 @@ exports.getHistoryByUser = catchAsync(
         }
 
         res.status(200).json({
-            status : true,
+            status : "success",
             message :  `History with the user id ${req.user._id} fetched`,
-            vehicleHistories
+            data : {
+                vehicleHistories
+            }
         })
     }
 )

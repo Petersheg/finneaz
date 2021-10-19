@@ -7,6 +7,7 @@ const sendAnyEmail = require('../../utility/emails/sendGrid');
 const logger = require('./../../utility/logger');
 const sentVerificationMail = require('../../utility/emails/sendVerificationEmail');
 const helperFunction = require('../../utility/helperFunction');
+const template = require('../../utility/emails/emailTemplate');
 
 exports.signup = catchAsync(
     async (req, res, next) => {
@@ -146,13 +147,22 @@ exports.forgotPassword = catchAsync(
         const resetToken = user.generateLinkToken(); //instance method
         await user.save({validateBeforeSave : false}); //save changes to model
 
-        const resetURL = `${req.get('host')}/api/v1/users/resetpassword/${resetToken}`
-        //${req.protocol}
+        const resetURL = `${req.protocol}//${req.get('host')}/api/v1/users/resetpassword/${resetToken}`
+
+        let emailObj = {
+            user,
+            greeting: "HI",
+            heading : `RESET YOUR PASSWORD.`,
+    
+            message : `You have requested to reset your email, Kindly click of the reset button bellow to
+                reset. Kindly ignore if you did not request a password reset`,
+    
+            link : resetURL,
+            buttonText : "RESET",
+    
+        }
         
-        
-        const message = `<h1>Hi ${user.userFullName}</h1>
-                    <p>Kindly click on this <a href = ${resetURL}> reset link </a> to reset your password</p>
-                    <p>If you did not request a password rest, kindly ignore</p>`
+        const message = template.generateTemplate(emailObj);
 
         try{
 

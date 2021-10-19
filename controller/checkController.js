@@ -18,23 +18,22 @@ exports.checkReportStatus = catchAsync(
 
             // If user exist then do not debit and send request
             if(userExist){
-                await helperFunction.callCarFaxAndDebit(req,res,VIN,0);
+                await helperFunction.callCarFaxAndDebit(req,res,VIN,0,next);
             }
 
             // if user does not exist push user. 
             if(!userExist){
 
-                vinExistInHistory.users.push(req.user._id)//Add user to history
-                vinExistInHistory.save({validateBeforeSave : false});
+                await helperFunction.callCarFaxAndDebit(req,res,VIN,5,next);
 
-                await helperFunction.callCarFaxAndDebit(req,res,VIN,5);
-                
+                //vinExistInHistory.users.push(req.user._id)//Add user to history
+                //vinExistInHistory.save({validateBeforeSave : false});
             }
 
         };
 
         if(!vinExistInHistory){
-            await helperFunction.callCarFaxAndDebit(req,res,VIN,5);
+            await helperFunction.callCarFaxAndDebit(req,res,VIN,5,next);
         };
     }
 );

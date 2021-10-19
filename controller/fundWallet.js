@@ -47,13 +47,11 @@ exports.fundWallet = catchAsync(
                 
                 // Send checkOut ur t0 user;
                 const checkOutURL = initTransaction.data.data.authorization_url;
-                const reference = initTransaction.data.data.reference;
 
                 res.status(200).json({
                     status : "success",
                     data : {
-                        checkOutURL,
-                        reference
+                        checkOutURL
                     }
                 })
                 

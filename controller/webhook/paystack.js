@@ -1,9 +1,9 @@
 const crypto = require('crypto');
-const secret = process.env.PAYSTACK_SECRET_KEY;
 const logger = require('../../utility/logger');
 const User = require('../../model/userModel');
 const Services = require('../../services/main');
 
+const secret = process.env.PAYSTACK_SECRET_KEY;
 
 exports.webhookURL = async (req,res)=>{
     try{
