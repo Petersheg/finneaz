@@ -30,8 +30,10 @@ exports.getTransactionByUser = catchAsync(
         }
         
         res.status(200).json({
-            status: true,
-            transactions
+            status: "success",
+            data: {
+                transactions
+            }
         });
     }
 )
