@@ -14,7 +14,7 @@ const options = {
 }
 
 mongoose
-.connect(connectURL,options)
+.connect(connectATLAS,options)
 .then(() => console.log('DB connected successfully'))
 .catch(err =>  logger.Report({ 
     service : "server::mongoose",
