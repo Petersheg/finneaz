@@ -4,12 +4,15 @@ const authController = require('./../controller/authController/users');
 const transactionRoute = require('./transaction');
 const historyRoute = require('./history');
 const fundWalletRoute = require('./fundWallet');
+const returnWalletRoute = require('./returnWallet');
 
 const router = express.Router();
 
 router.use('/:userId?/history', historyRoute);
 router.use('/:userId?/transactions', transactionRoute);
 router.use('/:userId?/fundwallet',fundWalletRoute);
+router.use('/:userId/returnwallet',returnWalletRoute);
+
 
 router.post('/signup',authController.signup);
 router.get('/verifyemail/:linkToken', authController.verifyEmail);
