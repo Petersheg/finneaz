@@ -82,7 +82,7 @@ exports.generateTemplate = (emailObj) => {
                         <td valign="top" align="center" style="padding:0;Margin:0;width:520px"> 
                         <table width="100%" cellspacing="0" cellpadding="0" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px"> 
                             <tr style="border-collapse:collapse"> 
-                            <td align="center" style="padding:0;Margin:0;font-size:0px"><a href="https://checkman.com/" target="_blank" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#FFFFFF;font-size:14px"><img src="https://uefgxs.stripocdn.email/content/guids/CABINET_dd87ac8c6ee6e89aa61580e170d0004e/images/banner.PNG" alt style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic" width="100"></a></td> 
+                            <td align="center" style="padding:0;Margin:0;font-size:0px"><a href="https://checkman.com/" target="_blank" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#FFFFFF;font-size:14px"><img src="https://uefgxs.stripocdn.email/content/guids/CABINET_dd87ac8c6ee6e89aa61580e170d0004e/images/checkmanlogo.PNG" alt style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic" width="100"></a></td> 
                             </tr> 
                         </table></td> 
                         </tr> 
