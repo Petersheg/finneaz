@@ -7,6 +7,11 @@ exports.checkReportStatus = catchAsync(
     async (req,res, next)=>{
 
         const VIN = req.query.vin;
+        
+        if(!VIN){
+            return next(new AppError("You must provide a VIN",402));
+        }
+
         const vinExistInHistory = await History.findOne({vin : VIN});
 
         if(vinExistInHistory){

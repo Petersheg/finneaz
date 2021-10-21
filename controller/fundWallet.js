@@ -17,7 +17,7 @@ exports.fundWallet = catchAsync(
         }
 
         if(!userId){
-            return next(new AppError('You can not access this route'));
+            return next(new AppError('You can not access this route',403));
         }
 
         const transactionObject = {
@@ -37,6 +37,10 @@ exports.fundWallet = catchAsync(
         let data = {
             amount : req.body.amount * toBaseCurrency,
             email : currentUser.userEmail
+        }
+
+        if(data.amount === ""){
+            return next(new AppError('Amount can not be empty',403));
         }
 
         try{
