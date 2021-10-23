@@ -1,6 +1,7 @@
 const catchAsync = require('../utility/catchAsync');
 const History = require('../model/vehicleHistory');
 const helperFunction = require('../utility/helperFunction');
+const AppError = require('../utility/appError');
 
 exports.checkReportStatus = catchAsync(
 
