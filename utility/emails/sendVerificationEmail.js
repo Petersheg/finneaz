@@ -10,7 +10,8 @@ exports.sentVerificationMail = async (user,req,res,next) => {
     const tokenLink = user.generateLinkToken(validTill);
     await user.save({validateBeforeSave : false});
 
-    const activationLink = `${req.protocol}//${req.get('host')}/api/v1/users/verifyemail/${tokenLink}`;
+    // const activationLink = `${req.protocol}//${req.get('host')}/api/v1/users/verifyemail/${tokenLink}`;
+    const activationLink = `${process.env.BASE_URL}/users/verifyemail/${tokenLink}`;
 
     let emailObj = {
         user,

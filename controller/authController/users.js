@@ -148,7 +148,7 @@ exports.forgotPassword = catchAsync(
         const resetToken = user.generateLinkToken(validTill); //instance method
         await user.save({validateBeforeSave : false}); //save changes to model
 
-        const resetURL = `${req.protocol}//${req.get('host')}/api/v1/users/resetpassword/${resetToken}`
+        const resetURL = `${process.env.BASE_URL}/users/resetpassword/${resetToken}`
 
         let emailObj = {
             user,
