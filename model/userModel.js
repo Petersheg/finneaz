@@ -58,6 +58,11 @@ const userSchema = new mongoose.Schema({
         type : Date
     },
 
+    reportPlan : {
+        type : String,
+        default : "one"
+    },
+
     wallet : [walletSchema],
 
     linkToken : String,

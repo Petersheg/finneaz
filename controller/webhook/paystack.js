@@ -53,6 +53,16 @@ exports.webhookURL = async (req,res)=>{
                 if( verified ){
                     const requestedAmount = verifyResponse.data.data.amount/data.toBaseCurrency;
                     await service.creditWallet(requestedAmount);
+
+                    // Check for plan user  opt for
+                    if(requestedAmount === 17500){
+                        currentUser.reportPlan = "five";
+                    }
+
+                    if(requestedAmount === 30000){
+                        currentUser.reportPlan = "ten";
+                    }
+
                     currentUser.save({validateBeforeSave : false});
 
                 }else{
