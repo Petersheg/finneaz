@@ -32,6 +32,11 @@ const userSchema = new mongoose.Schema({
         validate : [validator.isEmail,'Kindly provide a valid email address'] //To validate Email
     },
 
+    role : {
+        type : String,
+        default : "user"
+    },
+
     emailConfirmationStatus : {
         type : Boolean,
         default : false

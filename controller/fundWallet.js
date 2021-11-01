@@ -39,7 +39,7 @@ exports.fundWallet = catchAsync(
             email : currentUser.userEmail
         }
 
-        if(data.amount === ""){
+        if(data.amount === 0 || !data.amount){
             return next(new AppError('Amount can not be empty',403));
         }
 
@@ -65,10 +65,10 @@ exports.fundWallet = catchAsync(
 
             logger.Report({
                 service : 'controller::fundWallet',
-                message : err.response.data.message ?? "something went wrong"
+                message : err?.response?.data?.message ?? "something went wrong"
             });
 
-            return next(new AppError(err.response.data.message ?? "something went wrong",500));
+            return next(new AppError(err?.response?.data?.message ?? "something went wrong",500));
         }
     }
 )
