@@ -1,6 +1,7 @@
+const axios = require('axios')
 const catchAsync = require('../utility/catchAsync');
 const AppError = require('../utility/appError');
-const axios = require('axios')
+const logger = require('../utility/logger');
 
 exports.checkAvailability = catchAsync(
 
@@ -23,8 +24,17 @@ exports.checkAvailability = catchAsync(
 
         let reportIsAvailable = checkStatus.data.status;
 
+        if(checkStatus.data.error === 'insufficient_balance'){
+            logger.Report({
+                service : 'controller::reportAvailability',
+                message : `Drumroll kindly fund wallet, Carfax said -> "${checkStatus.data.error }"`
+            });
+
+            return next(new AppError("Something went wrong, Kindly try again"))
+        }
+
         if(!reportIsAvailable){
-            return next(new AppError("Report not available for provided VIN"))
+            return next(new AppError("Report not available for provided VIN",400))
         }
 
         if(reportIsAvailable){

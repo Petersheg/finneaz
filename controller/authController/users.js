@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const _ = require('lodash');
 const jwt = require('jsonwebtoken');
 const User = require('./../../model/userModel');
 const catchAsync = require('./../../utility/catchAsync');
@@ -252,3 +253,37 @@ exports.updatePassword = catchAsync(
         helperFunction.sendTokenAsResponse(200,currentUser,res,message);
     }
 );
+
+exports.updateSelf = catchAsync(
+    async (req,res,next)=>{
+        const userId = req.params.userId;
+        const currentUser = req.user;
+
+        if(!userId){
+            return next(new AppError("You must provide an Id",400));
+        }
+
+        if(currentUser._id != userId){
+            return next(new AppError("User do not exist",400));
+        }
+
+        if(req.body.password || req.body.confirmPassword){
+            return next(new AppError("You can not edit your password with this route",400));
+        }
+
+        const toUpdate = _.pick(req.body,["userFullName","userName","userMobile","userEmail"]);
+
+        const updateUser = await User.findByIdAndUpdate(currentUser.id,toUpdate,{
+            new : true,
+            runValidators : true
+        })
+
+        res.status(200).json({
+            status: "success",
+            message: "Detail(s) updated successfully",
+            data: {
+                updateUser
+            }
+        });
+    }
+)

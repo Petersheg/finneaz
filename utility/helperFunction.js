@@ -24,7 +24,7 @@ async function getCarReport(req){
             url : reportURL
         })
 
-        // Creat new history
+        // Check history for both VIN and user
         const vinExist = await History.findOne({vin : VIN});
         const userExist = await History.findOne({users : {$eq : req.user._id}});
 
@@ -109,7 +109,7 @@ exports.sendTokenAsResponse = (statusCode,user,res,message) =>{
 
 
 exports.callCarFaxAndDebit = async (req,res,vin,amountToDebit,next)=>{
-    let message = `Vehicle report with the ${vin} has generated!`;
+    let message = `Vehicle report with the ${vin} has been generated!`;
 
     const obj = {
         type : 'debit',
