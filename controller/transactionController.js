@@ -24,6 +24,7 @@ exports.getTransactionByUser = catchAsync(
             filter = {user : userId, ...req.query};
         }
         let newFilter = _.omit(filter,["page","limit"]);
+       
         let transaction = Transaction.find(newFilter);
 
         // Implement Pagination
@@ -33,12 +34,6 @@ exports.getTransactionByUser = catchAsync(
 
         transaction = transaction.skip(skip).limit(limit);
 
-        // if(req.query.page){
-        //     const allTransactions = await Transaction.countDocuments();
-        //     if(skip > allTransactions){
-        //         return next(new AppError("Requested page is not available"))
-        //     }
-        // }
         const transactions = await transaction;
 
         if(!transactions || transactions.length === 0){

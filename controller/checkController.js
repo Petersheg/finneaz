@@ -31,34 +31,34 @@ exports.checkReportStatus = catchAsync(
             return next(new AppError("You must provide a VIN",402));
         }
 
-        const vinExistInHistory = await History.findOne({vin : VIN});
+        if(VIN === "12345678901234567"){
+            await helperFunction.callCarFaxAndDebit(req,res,VIN,0,next);
+        }else{
+            const vinExistInHistory = await History.findOne({vin : VIN});
+            
+            if(vinExistInHistory){
 
-        if(vinExistInHistory){
+                // check if user making this request already did before
+                const userExist =  await History.findOne({
+                    users : {$eq : req.user._id}
+                });
+                // If user exist then do not debit and send request
+                if(userExist){
+                    await helperFunction.callCarFaxAndDebit(req,res,VIN,0,next);
+                }
 
-            // check if user making this request already did before
-            const userExist =  await History.findOne({
-                users : {$eq : req.user._id}
-            });
-            // If user exist then do not debit and send request
-            if(userExist){
-                await helperFunction.callCarFaxAndDebit(req,res,VIN,0,next);
-            }
+                // if user does not exist push user. 
+                if(!userExist){
+                    let chargeAmount = setChargeAmount(req.user);
+                    await helperFunction.callCarFaxAndDebit(req,res,VIN,chargeAmount,next);
+                }
 
-            // if(!userExist && VIN === "12345678901234567"){
-            //     await helperFunction.callCarFaxAndDebit(req,res,VIN,0,next);
-            // }
+            };
 
-            // if user does not exist push user. 
-            if(!userExist){
-                let chargeAmount = setChargeAmount(req.user);
+            if(!vinExistInHistory){
+                let chargeAmount  = setChargeAmount(req.user);
                 await helperFunction.callCarFaxAndDebit(req,res,VIN,chargeAmount,next);
-            }
-
-        };
-
-        if(!vinExistInHistory){
-            let chargeAmount  = setChargeAmount(req.user);
-            await helperFunction.callCarFaxAndDebit(req,res,VIN,chargeAmount,next);
-        };
+            };
+        }
     }
 );

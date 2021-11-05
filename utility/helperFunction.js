@@ -55,7 +55,7 @@ async function getCarReport(req){
     }
 }
 
-async function checkAvailability(req){
+async function checkAvailability(req,next){
 
     try{
         const VIN = req.query.vin;
@@ -70,12 +70,21 @@ async function checkAvailability(req){
             url : checkURL
         })
 
+        if(checkStatus.data.error === 'insufficient_balance'){
+            logger.Report({
+                service : 'controller::reportAvailability',
+                message : `Drumroll kindly fund wallet, Carfax said -> "${checkStatus.data.error }"`
+            });
+
+            return next(new AppError("Something went wrong, Kindly try again"))
+        }
+
         return checkStatus.data.status;
 
     }catch(err){
 
         logger.Report({
-            service : 'controller::checkController::checkAvailability',
+            service : 'utility::helperFunction::checkAvailability',
             message : err.message,
         });
     }
@@ -122,7 +131,7 @@ exports.callCarFaxAndDebit = async (req,res,vin,amountToDebit,next)=>{
 
         const service = new Services(obj,req.user);
         // Check VIN availability
-        const vinIsAvailable = await checkAvailability(req);
+        const vinIsAvailable = await checkAvailability(req,next);
 
         if(!vinIsAvailable){
             return next(new AppError('Car report is not available',404));
