@@ -10,6 +10,7 @@ const checkRoute = require('./router/check');
 const reportAvailabilityRoute = require('./router/reportAvailability');
 const webhookRoute = require('./router/webhook');
 const resentEmailRoute = require('./router/resendEmail');
+const googleOAuthRoute = require('./router/googleOAuth');
 const globalErrorHandler = require('./controller/errorController/validation');
 const AppError = require('./utility/appError');
 const logger = require('./utility/logger');
@@ -51,6 +52,7 @@ app.use('/api/v1/check',checkRoute);
 app.use('/api/v1/reportavailability',reportAvailabilityRoute);
 app.use('/api/v1/resendemail',resentEmailRoute);
 app.use('/api/v1/fundwallet/webhook',webhookRoute);
+app.use('/api/v1/oauth/google',googleOAuthRoute);
 
 
 // Handle unregister routes.

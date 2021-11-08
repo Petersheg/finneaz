@@ -20,7 +20,6 @@ const userSchema = new mongoose.Schema({
 
     userMobile :{
         type: Number,
-        required : [true, 'Mobile Number is required'],
         min : [11, 'Phone number must have at least 11 digits'],
         // validate :[validator.isMobile,'This is a wrong phone number format']
     },
