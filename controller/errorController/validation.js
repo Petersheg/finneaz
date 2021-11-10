@@ -23,6 +23,14 @@ const handleCastError = (err)=>{
     return new AppError(message,440);
 }
 
+const handleJWTError = () => {
+    return new AppError('Invalid token provided',401);
+}
+
+const handleJWTExpiredError = () => {
+    return new AppError('Token expired, kindly re-login',401);
+}
+
 const productionError = (err,res) => {
 
     if(err.isOperational){
@@ -71,6 +79,14 @@ module.exports = (err,req,res,next)=>{
 
         if(err.message.includes('Cast')){
            err = handleCastError(err);
+        }
+
+        if(err.name === 'JsonWebTokenError'){
+            err = handleJWTError()
+        }
+
+        if(err.name === 'TokenExpiredError'){
+            err = handleJWTExpiredError();
         }
 
         if(err.message.includes('validation')){
