@@ -3,6 +3,7 @@ const AppError = require('../appError');
 const helperFunction = require('../helperFunction');
 const sendAnyEmail = require('./sendGrid');
 const template = require('./emailTemplate');
+const logger = require('./sendVerificationEmail');
 
 exports.sentVerificationMail = async (user,req,res,next) => {
     
@@ -67,6 +68,11 @@ exports.sentVerificationMail = async (user,req,res,next) => {
 
     }catch(err){
 
+        logger.Report({
+            service : 'utility::emails::sendVerificationEmail',
+            message : err.message
+        })
+
         if (req.originalUrl.includes("signup")) {
             user.linkToken = undefined,
             user.linkTokenExpires = undefined
@@ -76,7 +82,5 @@ exports.sentVerificationMail = async (user,req,res,next) => {
         }else{
             return next( new AppError('Message sending failed',500));
         }
-
-       
     }
 }
