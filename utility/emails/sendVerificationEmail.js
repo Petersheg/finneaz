@@ -3,7 +3,7 @@ const AppError = require('../appError');
 const helperFunction = require('../helperFunction');
 const sendAnyEmail = require('./sendGrid');
 const template = require('./emailTemplate');
-const logger = require('../sendVerificationEmail');
+const logger = require('../logger');
 
 exports.sentVerificationMail = async (user,req,res,next) => {
     
