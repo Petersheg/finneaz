@@ -70,7 +70,7 @@ exports.sentVerificationMail = async (user,req,res,next) => {
 
         logger.Report({
             service : 'utility::emails::sendVerificationEmail',
-            message : err.message
+            message : JSON.stringify(err)
         })
 
         if (req.originalUrl.includes("signup")) {
