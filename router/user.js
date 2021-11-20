@@ -10,7 +10,7 @@ const updateSelfRoute = require('./updateSelf');
 const router = express.Router();
 
 router.use('/:userId?/history', historyRoute);
-router.use('/:userId?/transactions', transactionRoute);
+router.use('/:userId?/transactions/:transactionId?', transactionRoute);
 router.use('/:userId?/fundwallet',fundWalletRoute);
 router.use('/:userId/returnwallet',returnWalletRoute);
 router.use('/:userId/updateself',updateSelfRoute);

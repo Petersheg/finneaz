@@ -10,6 +10,8 @@ exports.getTransactionByUser = catchAsync(
         let filter = {};
 
         let userId = req.params.userId;
+        let transactionId = req.params.transactionId;
+
         const currentUserId = req.user._id;
 
         if(userId != currentUserId){
@@ -20,22 +22,27 @@ exports.getTransactionByUser = catchAsync(
             return next(new AppError('You can not access this route',403));
         }
 
-        if(userId  || req.query){
-            filter = {user : userId, ...req.query};
+        if(userId && transactionId){
+            filter = {user : userId,_id:transactionId, ...req.query};
+        }else{
+            if(userId  || req.query){
+                filter = {user : userId, ...req.query};
+            }
         }
+
         let newFilter = _.omit(filter,["page","limit"]);
        
-        let transaction = Transaction.find(newFilter);
+        let transaction = Transaction.find(newFilter).populate("user");
 
         // Implement Pagination
         const pages = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 3;
+        const limit = parseInt(req.query.limit) || 0;
         const skip = (pages - 1) * limit;
 
         transaction = transaction.skip(skip).limit(limit);
 
         const transactions = await transaction;
-
+        
         if(!transactions || transactions.length === 0){
             return next(new AppError('Transaction(s) not available',404));
         }
