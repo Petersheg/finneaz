@@ -40,7 +40,6 @@ app.use(xss());
 
 app.use('/api/v1/users',userRoute);
 
-
 // Handle unregister routes.
 app.all('*',(req,res,next)=>{
     next(new AppError(`This route '${req.originalUrl}' is not registered on this network!`,440));
