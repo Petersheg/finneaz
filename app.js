@@ -2,18 +2,11 @@ const express = require('express');
 const helmet = require("helmet");
 const xss = require('xss-clean');
 const cors = require('cors');
-const cookieParser = require('cookie-parser');
 const mongoSanitize = require('express-mongo-sanitize');
 const app = express();
 const userRoute = require('./router/user');
-const checkRoute = require('./router/check');
-const reportAvailabilityRoute = require('./router/reportAvailability');
-const webhookRoute = require('./router/webhook');
-const resentEmailRoute = require('./router/resendEmail');
-const googleOAuthRoute = require('./router/googleOAuth');
 const globalErrorHandler = require('./controller/errorController/validation');
 const AppError = require('./utility/appError');
-const logger = require('./utility/logger');
 
 
 app.use(express.json());
@@ -44,15 +37,8 @@ app.use(mongoSanitize());
 app.use(helmet());
 // Prevent against xss attacks
 app.use(xss());
-// To make use cookieParser
-app.use(cookieParser());
 
 app.use('/api/v1/users',userRoute);
-app.use('/api/v1/check',checkRoute);
-app.use('/api/v1/reportavailability',reportAvailabilityRoute);
-app.use('/api/v1/resendemail',resentEmailRoute);
-app.use('/api/v1/fundwallet/webhook',webhookRoute);
-app.use('/api/v1/oauth/google',googleOAuthRoute);
 
 
 // Handle unregister routes.
