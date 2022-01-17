@@ -25,7 +25,7 @@ exports.contact = catchAsync(
 
            res.status(200).json({
                 status : 'success',
-                message : 'Message sent successfully' 
+                message : 'This is to notify you that your message has been received, we will get back to you soon!' 
             });
 
         }catch(e){

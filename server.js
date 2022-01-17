@@ -6,7 +6,7 @@ const app = require('./app');
 const connectURL = process.env.DB_LOCAL;
 const port = process.env.PORT || 3000;
 const connectATLAS = process.env.DB_ATLAS.replace('<PASSWORD>',process.env.DB_PASS);
-console.log(connectATLAS);
+
 const options = {
     useNewUrlParser : true,
     useUnifiedTopology: true
