@@ -14,6 +14,7 @@ exports.contact = catchAsync(
         }
         // await User.create({name,email});
         const options = {
+            email,
             subject : `Message from ${name}`,
             message: `
             <p> ${message}</p>
