@@ -3,9 +3,13 @@ const dotenv = require('dotenv');
 dotenv.config({path:'./config.env'});
 const app = require('./app');
 
-const connectURL = process.env.DB_LOCAL;
+let connectURL;
+if(process.env.NODE_ENV === "production"){
+    connectURL = process.env.DB_ATLAS.replace('<PASSWORD>',process.env.DB_PASS);
+}else{
+    connectURL = process.env.DB_LOCAL;
+}
 const port = process.env.PORT || 3000;
-const connectATLAS = process.env.DB_ATLAS.replace('<PASSWORD>',process.env.DB_PASS);
 
 const options = {
     useNewUrlParser : true,
@@ -13,7 +17,7 @@ const options = {
 }
 
 mongoose
-.connect(connectATLAS,options)
+.connect(connectURL,options)
 .then(() => console.log('DB connected successfully'))
 .catch(err => console.log(err));
 
