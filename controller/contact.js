@@ -2,7 +2,7 @@ const catchAsync = require('../utility/catchAsync');
 const AppError = require('../utility/appError');
 const sendAnyEmail = require('../utility/emails/sendGrid');
 const User = require('../model/user');
-const {sentToWhatsApp} = require('../utility/whatsApp/twilio');
+// const {sentToWhatsApp} = require('../utility/whatsApp/twilio');
 
 exports.contact = catchAsync(
 
@@ -21,8 +21,8 @@ exports.contact = catchAsync(
         }
 
         try{
-            // await sendAnyEmail(options);
-            await sentToWhatsApp(message);
+            await sendAnyEmail(options);
+            // await sentToWhatsApp(message);
 
            res.status(200).json({
                 status : 'success',
